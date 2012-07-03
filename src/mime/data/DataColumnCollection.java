@@ -59,7 +59,7 @@ public class DataColumnCollection extends ArrayList<DataColumn> {
      * @return True if there is an existing column, otherwise false if there is none.
      */
     public boolean  contains(String columnname) {
-        return (boolean)(get(columnname)!=null); 
+        return (boolean)(get(columnname)!=null);  
     }
 
     /**
