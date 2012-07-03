@@ -45,7 +45,8 @@ public class MySqlConnection {
         database=replace("DATABASE=", database, "");
         uid=replace("UID=", uid, "");
         pwd=replace("PWD=", pwd, "");
-        
+        port=replace("PORT=", port, "");
+         
         if (port=="") port="3306";
         
         System.out.println(server);
