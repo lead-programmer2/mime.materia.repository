@@ -73,8 +73,7 @@ public class DataColumnCollection extends ArrayList<DataColumn> {
             for (DataColumn col:this) {
                 col=null;
             }
-            super.finalize();
-            
+            finalize();
             DataColumnCollection _current=this;
             _current=null; System.gc();
         }
