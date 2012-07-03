@@ -69,7 +69,7 @@ public class DataTableCollection extends ArrayList<DataTable> {
                 dt.dispose(); dt=null;
             }
             
-            super.finalize();
+            finalize();
             
             DataTableCollection _current=this;
             _current=null; System.gc();

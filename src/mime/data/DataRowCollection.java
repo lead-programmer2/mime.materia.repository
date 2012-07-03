@@ -60,7 +60,7 @@ public class DataRowCollection extends ArrayList<DataRow> {
     public void dispose() {
         _isdisposed=true;
         try {
-            super.finalize();
+           finalize();
             DataRowCollection _current=this;
             _current=null; System.gc();
         }
