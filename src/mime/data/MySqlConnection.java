@@ -3,8 +3,11 @@
  * and open the template in the editor.
  */
 package mime.data;
-
 import java.sql.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import mime.Converter;
+
 
 /**
  * Mimics VB.Net MySql.Data.MySqlClient.MySqlConnection class.
@@ -27,7 +30,39 @@ public class MySqlConnection {
     private Connection _connection=null;
     
     /**
-     * Creates a new instance of MySqlClient.
+     * Creates a new instance of MySqlConnection.
+     * @param connectionstring  OLEDB formatted MySql database connection string.
+     */
+    public MySqlConnection(String connectionstring) {
+        String _base="[\\w]+;";
+        String server=getMatch("SERVER=" + _base, connectionstring).replace(";", "");
+        String database=getMatch("DATABASE=" + _base, connectionstring).replace(";", "");
+        String uid=getMatch("UID=" + _base, connectionstring).replace(";", "");
+        String pwd=getMatch("PWD=" + _base, connectionstring).replace(";", "");
+        String port=getMatch("PORT=[0-9]+", connectionstring).replace(";", "");
+        
+        server=replace("SERVER=", server, "");
+        database=replace("DATABASE=", database, "");
+        uid=replace("UID=", uid, "");
+        pwd=replace("PWD=", pwd, "");
+        
+        if (port=="") port="3306";
+        
+        System.out.println(server);
+        System.out.println(database);
+        System.out.println(uid);
+        System.out.println(pwd);
+        System.out.println(port);
+        
+        _server=server; 
+        _database=database; 
+        _userid=uid; 
+        _password=pwd; 
+        _port=Converter.toInt(port);
+    }
+    
+    /**
+     * Creates a new instance of MySqlConnection.
      * @param server Database server host name or IP address.
      * @param database Database catalog name
      * @param userid Database server log on id.
@@ -38,7 +73,7 @@ public class MySqlConnection {
     }
     
     /**
-     * Creates a new instance of MySqlClient.
+     * Creates a new instance of MySqlConnection.
      * @param server Database server host name or IP address.
      * @param database Database catalog name
      * @param userid Database server log on id.
@@ -143,6 +178,16 @@ public class MySqlConnection {
     public Connection getInterface() {
         return _connection;
     }
+    
+    private String getMatch(String searchpattern, String target) {
+        String _match="";
+        Pattern _pattern=Pattern.compile(searchpattern, Pattern.CASE_INSENSITIVE);
+        Matcher _matcher=_pattern.matcher(target);
+        boolean _matches=_matcher.find();
+        if (_matches) _match=_matcher.group();
+        return _match;
+    }
+    
     
     /**
      * Gets the current connection database server log on password.
@@ -256,6 +301,14 @@ public class MySqlConnection {
          catch (Exception ex) {
              throw new DatabaseConnectionException(ex.getMessage());
          }
+     }
+     
+     private String replace(String searchpattern, String target, String replacewith) { 
+         String _replaced=target;
+         Pattern _pattern=Pattern.compile(searchpattern, Pattern.CASE_INSENSITIVE);
+         Matcher _matcher=_pattern.matcher(target);
+        if (_matcher.find()) _replaced = _matcher.replaceAll(replacewith);
+        return _replaced;
      }
      
     /**
