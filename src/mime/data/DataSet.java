@@ -28,7 +28,7 @@ public class DataSet {
         _isdisposed=true;
         try {
             _tables.dispose(); _tables=null;
-            super.finalize();
+            finalize();
             DataSet _current=this;
             _current=null; System.gc();
         }
