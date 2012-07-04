@@ -34,7 +34,6 @@ public class MySqlQueryParser {
         String _sections[]=_sql.split(";");
         
         if (_sections.length > 0) {
-            System.out.println("Split into " + _sections.length + " statements.");
             String _currentstament="";
             
             for (String section:_sections) {
