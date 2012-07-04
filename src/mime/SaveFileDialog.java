@@ -23,6 +23,7 @@ public class SaveFileDialog {
     private String _filename="";
     private String _filter="All Files (*.*)|*.*";
     private String _initialdirectory="";
+    private boolean  _isdisposed=false;
     private String _title="";
     
     /**
@@ -79,6 +80,70 @@ public class SaveFileDialog {
      */
     public String getTitle() {
         return _title;
+    }
+    
+   /**
+    * Returns whether the current class already invokes its dispose method and has been collected by the garbage collection or not.
+    * @return True if class already called its dispose method, otherwise false.
+    */
+    public boolean isDisposed() {
+        return _isdisposed;
+    }
+    
+    /**
+     * Sets whether the dialog will validate if the selected file's directory exists or not.
+     * @param check 
+     */
+    public void setCheckExistingDirectory(boolean check) {
+        _checkexistingdirectory=check;
+    }
+    
+    /**
+     * Sets whether the dialog will validate if the selected file exists or not.
+     * @param check 
+     */
+    public void setCheckExistingFile(boolean check) {
+        _checkexistingfile=check;
+    }
+    
+    /**
+     * Sets the dialog's default file extension name
+     * @param extension 
+     */
+    public void setDefaultExtension(String extension) {
+        _defaultextension=extension;
+    }
+    
+    /**
+     * Sets the dialog's default selected file.
+     * @param filename 
+     */
+    public void setFilename(String filename) {
+         _filename=filename;
+    }
+    
+    /**
+     * Sets the dialog's associated file filters.
+     * @param filter 
+     */
+    public void setFilter(String filter) {
+        _filter=filter;
+    }
+    
+    /**
+     * Sets the dialog's assigned default directory when shown in the user screen.
+     * @param directory 
+     */
+    public void setInitialDirectory(String directory) {
+        _initialdirectory=directory;
+    }
+    
+    /**
+     * Sets the dialog's title text when displayed in the user screen.
+     * @param title 
+     */
+    public void setTitle(String title) {
+        _title=title;
     }
     
 }
