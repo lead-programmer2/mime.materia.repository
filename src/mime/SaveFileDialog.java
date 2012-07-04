@@ -27,6 +27,24 @@ public class SaveFileDialog {
     private String _title="";
     
     /**
+     * Dispose off any resources used by the class to free up memory space. May throw a RunTimeException especially in cases
+     * of multiple call of this method. To validate whether the current collection already called this method, check isDispose
+     * method.
+     */
+    public void dispose() {
+        _isdisposed=true;
+        try {
+            finalize();
+            SaveFileDialog _current=this;
+            _current=null; System.gc();
+        }
+        catch (Throwable ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+        
+    
+    /**
      * Gets whether the dialog will validate if the selected file's directory is existing or not.
      * @return Returns true if dialog is set to validate selected file's directory, otherwise false.
      */
