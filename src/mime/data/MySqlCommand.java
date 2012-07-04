@@ -104,14 +104,36 @@ public class MySqlCommand {
         }
         else {
             Statement _statement=_connection.prepareStatement();
-            try {
-                _statement.setQueryTimeout(_commandtimeout);
-                _statement.execute(_commandtext);
-                _affected=_statement.getUpdateCount();
+            MySqlQueryParser _parser=new MySqlQueryParser(_commandtext);
+            Object[] _queries=_parser.statements();
+            System.out.println(_queries.length + " sql statements");
+            
+            if (_queries.length > 0) {
+                _affected=0;
+                try {
+                    for (Object query:_queries) {
+                        _statement.setQueryTimeout(_commandtimeout);
+                        _statement.execute(query.toString());
+                        _affected+=_statement.getUpdateCount();
+                    }
+                }
+                catch (Exception ex) {
+                    _affected=-1; _parser=null;
+                    throw new MySqlCommandException(ex.getMessage());
+                }
             }
-            catch (Exception ex) {
-                throw new MySqlCommandException(ex.getMessage());
+            else { 
+                try {
+                    _statement.setQueryTimeout(_commandtimeout);
+                    _statement.execute(_commandtext);
+                    _affected=_statement.getUpdateCount();
+                }
+                catch (Exception ex) {
+                    _parser=null;
+                    throw new MySqlCommandException(ex.getMessage());
+                } 
             }
+            _parser=null;
         }
         
         return _affected;
