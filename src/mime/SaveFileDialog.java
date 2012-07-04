@@ -5,6 +5,9 @@
 package mime;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import mime.io.File;
+import mime.io.Path;
 
 /**
  * Mimics VB.Net System,Windows.Forms.SaveFileDialog class.
@@ -26,6 +29,7 @@ public class SaveFileDialog {
     private String _filter="All Files (*.*)|*.*";
     private String _initialdirectory="";
     private boolean  _isdisposed=false;
+    private boolean  _multiselect=false;
     private String _title="";
     
     /**
@@ -95,6 +99,14 @@ public class SaveFileDialog {
     }
     
     /**
+     * Gets whether the dialog accepts multi-selection or not.
+     * @return True if the dialog accepts multi-selection, otherwise false.
+     */
+    public boolean getMultiSelect() {
+        return _multiselect;
+    }
+    
+    /**
      * Gets the title text associated with the dialog.
      * @return Title of the dialog
      */
@@ -159,6 +171,14 @@ public class SaveFileDialog {
     }
     
     /**
+     * Sets whether the dialog accepts multi-selection or not.
+     * @param multiselect 
+     */
+    public void setMultiSelect(boolean multiselect) {
+        _multiselect=multiselect;
+    }
+    
+    /**
      * Sets the dialog's title text when displayed in the user screen.
      * @param title 
      */
@@ -170,6 +190,63 @@ public class SaveFileDialog {
         DialogResult _result=DialogResult.None;
         
         JFileChooser _dialog=new JFileChooser(_initialdirectory);
+        _dialog.setDialogTitle(_title);
+        
+        if (_filter.trim()=="") _filter="All Files (*.*)|*.*";
+        String[] _filtersections=_filter.split("\\|");
+        String _currentname="";
+        String _currentexts[];
+       
+        int _len=_filtersections.length;
+       
+        for (int i=0; i<=_len-1; i++) {
+            if (i%2==0) _currentname=_filtersections[i];
+            else {
+                String[] _exts=_filtersections[i].trim().split(";");
+                _currentexts=new String[_exts.length];
+                for (int ctr=0; ctr<= _exts.length-1; ctr++) {
+                    _currentexts[ctr]=_exts[ctr];
+                }
+                System.out.println(_currentname);
+                FileNameExtensionFilter _filter=new FileNameExtensionFilter(_currentname, _currentexts);
+                _dialog.addChoosableFileFilter(_filter);
+                _dialog.setFileFilter(_filter);
+            }
+        } 
+        
+        if (File.exists(_filename)) _dialog.setSelectedFile(new java.io.File(_filename));
+        _dialog.setMultiSelectionEnabled(_multiselect);
+        
+        int _dresult=_dialog.showSaveDialog(null);
+        switch (_dresult) {
+            case JFileChooser.APPROVE_OPTION:
+                _result=DialogResult.OK; 
+                _filename=_dialog.getSelectedFile().getPath();  
+                try {
+                    if (Path.getExtension(_filename).equals("")) {
+                       FileNameExtensionFilter _currentfilter=(FileNameExtensionFilter) _dialog.getFileFilter();
+                       String[] exts=_currentfilter.getExtensions();
+                       if (exts.length > 0 ) _filename+=exts[0].replace("*", "");
+                       else {
+                           if (!_defaultextension.trim().equals("")) _filename+="."+_defaultextension;
+                       }
+                    }
+                }
+                catch (Exception ex) { 
+                    FileNameExtensionFilter _currentfilter=(FileNameExtensionFilter) _dialog.getFileFilter();   
+                    String[] exts=_currentfilter.getExtensions();   
+                    if (exts.length > 0 ) _filename+=exts[0].replace("*", "");
+                    else {
+                           if (!_defaultextension.trim().equals("")) _filename+="."+_defaultextension;
+                    }
+                }
+                break;
+            case JFileChooser.CANCEL_OPTION:
+                _result=DialogResult.Cancel; break;
+            case JFileChooser.ERROR_OPTION:
+                _result=DialogResult.Abort; break;
+            default: break;
+        }
         
         return _result;
     }
