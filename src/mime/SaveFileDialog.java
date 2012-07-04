@@ -192,7 +192,7 @@ public class SaveFileDialog {
         JFileChooser _dialog=new JFileChooser(_initialdirectory);
         _dialog.setDialogTitle(_title);
         
-        if (_filter.trim()=="") _filter="All Files (*.*)|*.*";
+        if (_filter.trim().equals("")) _filter="All Files (*.*)|*.*";
         String[] _filtersections=_filter.split("\\|");
         String _currentname="";
         String _currentexts[];
