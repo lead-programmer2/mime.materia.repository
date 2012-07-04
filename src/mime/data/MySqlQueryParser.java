@@ -83,7 +83,6 @@ public class MySqlQueryParser {
         for (String _sqlpattern:_regexes) {
             Pattern _pattern=Pattern.compile(_sqlpattern);
             Matcher _matcher=_pattern.matcher(statement);
-            System.out.println("Pattern: " + _sqlpattern + "\nStatement: " + statement);
             _issql = (_issql || _matcher.find());
             if (_issql) break;
         }
@@ -132,7 +131,6 @@ public class MySqlQueryParser {
             }
         }
         
-        if (_withunclosed) System.out.println("Unclosed block found in : " + statement);
         return _withunclosed;
     }
     
