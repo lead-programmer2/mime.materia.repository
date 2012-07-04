@@ -4,6 +4,8 @@
  */
 package mime;
 
+import javax.swing.JFileChooser;
+
 /**
  * Mimics VB.Net System,Windows.Forms.SaveFileDialog class.
  * @author seph
@@ -164,4 +166,12 @@ public class SaveFileDialog {
         _title=title;
     }
     
+    public DialogResult showDialog() {
+        DialogResult _result=DialogResult.None;
+        
+        JFileChooser _dialog=new JFileChooser(_initialdirectory);
+        
+        return _result;
+    }
+        
 }
