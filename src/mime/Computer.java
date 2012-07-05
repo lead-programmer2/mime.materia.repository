@@ -57,5 +57,26 @@ public class Computer {
         
         return _ipaddress;
     }
+ 
+    /**
+     * Gets the current workstation OS name.
+     * @return Workstation OS name.
+     */
+    public static String osName() {
+        Object _osname=null;
+        
+        try {
+            _osname=System.getProperty("os.name");
+        }
+        catch (Exception ex) {
+            _osname=null;
+            ex.printStackTrace();
+        }
+        
+        String _name="";
+        if (_osname!=null) _name=_osname.toString();
+        
+        return _name;
+    }
     
 }
