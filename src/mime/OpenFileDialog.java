@@ -26,7 +26,7 @@ public class OpenFileDialog {
         
     }
         
-     private boolean _checkexistingfile=true;
+    private boolean _checkexistingfile=true;
     private boolean  _checkexistingdirectory=true;
     private String _defaultextension="";
     private String _filename="";
