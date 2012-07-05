@@ -128,14 +128,14 @@ public class SpecialDirectories {
               fw.write(vbs);
               fw.close();
       
-              Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
+              java.lang.Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
               BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
               
               result = input.readLine();
               input.close();
           }
-          catch(Exception e){
-              e.printStackTrace();
+          catch(Exception ex){
+              ex.printStackTrace();
           }
     
           return result;
