@@ -4,7 +4,10 @@
  */
 package mime;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import mime.io.File;
 import mime.io.Path;
@@ -186,11 +189,16 @@ public class SaveFileDialog {
         _title=title;
     }
     
+    /**
+     * Displays a Save file common dialog in the user screen.
+     * @return Dialog result button that the user choose.
+     */
     public DialogResult showDialog() {
         DialogResult _result=DialogResult.None;
         
         JFileChooser _dialog=new JFileChooser(_initialdirectory);
         _dialog.setDialogTitle(_title);
+        _dialog.setAcceptAllFileFilterUsed((boolean) (_filter.equals("")));
         
         if (_filter.trim().equals("")) _filter="All Files (*.*)|*.*";
         String[] _filtersections=_filter.split("\\|");
@@ -207,18 +215,38 @@ public class SaveFileDialog {
                 for (int ctr=0; ctr<= _exts.length-1; ctr++) {
                     _currentexts[ctr]=_exts[ctr];
                 }
-                System.out.println(_currentname);
                 FileNameExtensionFilter _filter=new FileNameExtensionFilter(_currentname, _currentexts);
                 _dialog.addChoosableFileFilter(_filter);
-                _dialog.setFileFilter(_filter);
+                
+                if (_defaultextension.trim().equals("")) _dialog.setFileFilter(_filter);
             }
         } 
+        
+        if (!_defaultextension.trim().equals("")){
+            for (FileFilter _filter:_dialog.getChoosableFileFilters()) {
+                FileNameExtensionFilter _currentfilter = (FileNameExtensionFilter) _filter;
+                String[] _extensions=_currentfilter.getExtensions();
+                for (String ext:_extensions) {
+                    System.out.println(ext);
+                    if (ext.trim().replace("*.", "").replace(".", "").toLowerCase().equals(_defaultextension.toLowerCase().replace(".", ""))) {
+                        _dialog.setFileFilter(_filter); break;
+                    }
+                }
+            }
+        }
         
         if (File.exists(_filename)) _dialog.setSelectedFile(new java.io.File(_filename));
         _dialog.setMultiSelectionEnabled(_multiselect);
         
-        int _dresult=_dialog.showSaveDialog(null);
-        switch (_dresult) {
+        JFrame _form=new JFrame();
+        ImageIcon _icon=new ImageIcon(Mime.resources.saveFileImageURL());
+        _form.setIconImage(_icon.getImage());
+        
+        Object _dresult=_dialog.showSaveDialog(_form);
+        int _chooserresult=-1; _form.dispose();
+        if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
+        
+        switch (_chooserresult) {
             case JFileChooser.APPROVE_OPTION:
                 _result=DialogResult.OK; 
                 _filename=_dialog.getSelectedFile().getPath();  
@@ -242,8 +270,10 @@ public class SaveFileDialog {
                 }
                 break;
             case JFileChooser.CANCEL_OPTION:
+                _filename="";
                 _result=DialogResult.Cancel; break;
             case JFileChooser.ERROR_OPTION:
+                _filename="";
                 _result=DialogResult.Abort; break;
             default: break;
         }

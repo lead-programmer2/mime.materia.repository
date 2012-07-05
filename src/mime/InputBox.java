@@ -154,16 +154,16 @@ public class InputBox {
         switch(icon) {
             case Critical: 
                 _messagetype=JOptionPane.ERROR_MESSAGE;
-                _icon=new ImageIcon(Mime.resources.getResource("/mime/critical.png")); break;
+                _icon=new ImageIcon(Mime.resources.criticalImageURL()); break;
             case Exclamation:
                 _messagetype=JOptionPane.WARNING_MESSAGE;
-                _icon=new ImageIcon(Mime.resources.getResource("/mime/exclamation.png")); break;
+                _icon=new ImageIcon(Mime.resources.exclamationImageURL()); break;
             case Information:
                 _messagetype=JOptionPane.INFORMATION_MESSAGE;
-                _icon=new ImageIcon(Mime.resources.getResource("/mime/information.png")); break;
+                _icon=new ImageIcon(Mime.resources.informationImageURL()); break;
             case Question:
                 _messagetype=JOptionPane.QUESTION_MESSAGE;
-                _icon=new ImageIcon(Mime.resources.getResource("/mime/question.png")); break;
+                _icon=new ImageIcon(Mime.resources.questionImageURL()); break;
             default: break;
         }
         

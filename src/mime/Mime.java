@@ -4,7 +4,7 @@
  */
 package mime;
 
-import javax.swing.LookAndFeel;
+import mime.resources.ResourceManager;
 
 /**
  * Global library class.
@@ -17,6 +17,5 @@ public class Mime {
      */
     public static final ResourceManager resources=new ResourceManager();
     
-    
-    
+   
 }
