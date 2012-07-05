@@ -11,11 +11,10 @@ import mime.resources.ResourceManager;
  * @author seph
  */
 public class Mime {
-    
+       
     /**
      * Returns the library resources.
      */
     public static final ResourceManager resources=new ResourceManager();
     
-   
 }
