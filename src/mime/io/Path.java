@@ -4,7 +4,7 @@
  */
 package mime.io;
 
-import java.nio.file.FileSystemNotFoundException;
+import java.io.FileNotFoundException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +37,7 @@ public class Path {
         }
         else {
             _file=null; System.gc();
-            throw new FileSystemNotFoundException("File is not available.");
+            throw new FileUnavailableException("File is not available.");
         }
        
         _file=null; System.gc();
