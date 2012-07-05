@@ -70,6 +70,14 @@ public class ResourceManager {
         return getResource("/mime/resources/openfiledialog.png");
     }
     
+    /**
+     * Gets the URL of the open file image used in FolderBrowserDialog class.
+     * @return URL of the folderbrowserdialog.png resource.
+     */
+    public URL openFolderImageURL() {
+        return getResource("/mime/resources/folderbrowserdialog.png");
+    }
+    
      /**
      * Gets the URL of the question image used in MessageBox class.
      * @return URL of the question.png resource.
