@@ -52,8 +52,7 @@ public class OpenFileDialog {
             throw new RuntimeException(ex.getMessage());
         }
     }
-        
-    
+          
     /**
      * Gets whether the dialog will validate if the selected file's directory is existing or not.
      * @return Returns true if dialog is set to validate selected file's directory, otherwise false.
@@ -191,7 +190,7 @@ public class OpenFileDialog {
     }
     
     /**
-     * Displays a Save file common dialog in the user screen.
+     * Displays a Open file common dialog in the user screen.
      * @return Dialog result button that the user choose.
      */
     public DialogResult showDialog() {
@@ -200,6 +199,7 @@ public class OpenFileDialog {
         JFileChooser _dialog=new JFileChooser(_initialdirectory);
         _dialog.setDialogTitle(_title);
         _dialog.setAcceptAllFileFilterUsed((boolean) (_filter.equals("")));
+        _dialog.setApproveButtonToolTipText("Select specified path");
         
         if (_filter.trim().equals("")) _filter="All Files (*.*)|*.*";
         String[] _filtersections=_filter.split("\\|");
@@ -244,7 +244,7 @@ public class OpenFileDialog {
         _form.setIconImage(_icon.getImage());
         
         Object _dresult=_dialog.showOpenDialog(_form);
-        int _chooserresult=-1; _form.dispose();
+        int _chooserresult=-1; 
         if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
         
         switch (_chooserresult) {
@@ -255,18 +255,43 @@ public class OpenFileDialog {
                 try {
                        
                     if (_checkexistingdirectory) {   
-                        if (!Directory.exists(Path.getDirectory(_filename))) {
-                            _result=DialogResult.None;
+                        String _currentdirectory=Path.getDirectory(_filename);
+                        while (!Directory.exists(_currentdirectory)) {   
                             MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
-                            return _result;
+                            _dresult=_dialog.showOpenDialog(_form);
+                            _chooserresult=-1; 
+                            if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
+                            
+                            switch (_chooserresult) {
+                                case JFileChooser.APPROVE_OPTION:
+                                    _currentdirectory=Path.getDirectory(_filename); break;
+                                case JFileChooser.CANCEL_OPTION:
+                                   _dialog=null; _form.dispose();
+                                   _result=DialogResult.Cancel; return _result;
+                                default: 
+                                   _dialog=null; _form.dispose();    
+                                   _result=DialogResult.None; return _result;  
+                            }
                         }
                     }
                 
                     if (_checkexistingfile) {
-                        if (!File.exists(_filename)) {
-                            _result=DialogResult.None;
-                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
-                            return _result;
+                        while (!File.exists(_filename)) {
+                              MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
+                            _dresult=_dialog.showOpenDialog(_form);
+                            _chooserresult=-1; 
+                            if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
+                            
+                            switch (_chooserresult) {
+                                case JFileChooser.APPROVE_OPTION:
+                                    _filename=_dialog.getSelectedFile().getPath() ; break;
+                                case JFileChooser.CANCEL_OPTION:
+                                   _dialog=null; _form.dispose();
+                                   _result=DialogResult.Cancel; return _result;
+                                default: 
+                                   _dialog=null; _form.dispose();    
+                                   _result=DialogResult.None; return _result;  
+                            }
                         }
                     }
                 
@@ -297,6 +322,7 @@ public class OpenFileDialog {
             default: break;
         }
         
+        _dialog=null; _form.dispose();
         return _result;
     }
 }
