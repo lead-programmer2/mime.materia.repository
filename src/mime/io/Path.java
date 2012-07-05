@@ -14,6 +14,22 @@ import java.util.regex.Pattern;
 public class Path {
    
     /**
+     * Gets the parent directory of the specified file path.
+     * @param filename Filename to be evaluated
+     * @return Parent directory of the specified file path.
+     */
+    public static String getDirectory(String filename) {
+       String _directory="";
+         
+       java.io.File _file=new java.io.File(filename);
+       if (_file.isDirectory()) _directory=filename;
+       else _directory=_file.getParent(); 
+       
+       return _directory;
+    }
+        
+    
+    /**
      * Gets the extension name of the specified file. 
      * @param filename Filename to evaluate
      * @return File extension name
@@ -22,8 +38,7 @@ public class Path {
         String _extension="";
         
         java.io.File _file=new java.io.File(filename);
-        if (_file.exists() &&
-            _file.isFile()) {
+        if (_file.isFile()) {
             Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9]+");
             Matcher _matcher=_pattern.matcher(filename);
             while (_matcher.find()) {

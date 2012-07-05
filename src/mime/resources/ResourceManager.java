@@ -62,6 +62,14 @@ public class ResourceManager {
         return getResource("/mime/resources/information.png");
     }
     
+    /**
+     * Gets the URL of the open file image used in OpenFileDialog class.
+     * @return URL of the openfiledialog.png resource.
+     */
+    public URL openFileImageURL() {
+        return getResource("/mime/resources/openfiledialog.png");
+    }
+    
      /**
      * Gets the URL of the question image used in MessageBox class.
      * @return URL of the question.png resource.
@@ -72,7 +80,7 @@ public class ResourceManager {
     
      /**
      * Gets the URL of the save file image used in SaveFileDialog class.
-     * @return URL of the critical.png resource.
+     * @return URL of the savefiledialog.png resource.
      */
     public URL saveFileImageURL() {
         return getResource("/mime/resources/savefiledialog.png");

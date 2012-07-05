@@ -14,19 +14,19 @@ import mime.io.File;
 import mime.io.Path;
 
 /**
- * Mimics VB.Net System,Windows.Forms.SaveFileDialog class.
+ * Mimics VB.Net System.Windows.Forms.OpenFileDialog.
  * @author seph
  */
-public class SaveFileDialog {
+public class OpenFileDialog {
     
     /**
-     * Creates a new instance of SaveFileDialog.
+     * Creates a new instance of OpenFileDialog.
      */
-    public SaveFileDialog() {
+    public OpenFileDialog() {
         
     }
-    
-    private boolean _checkexistingfile=false;
+        
+     private boolean _checkexistingfile=true;
     private boolean  _checkexistingdirectory=true;
     private String _defaultextension="";
     private String _filename="";
@@ -45,7 +45,7 @@ public class SaveFileDialog {
         _isdisposed=true;
         try {
             finalize();
-            SaveFileDialog _current=this;
+            OpenFileDialog _current=this;
             _current=null; System.gc();
         }
         catch (Throwable ex) {
@@ -240,10 +240,10 @@ public class SaveFileDialog {
         _dialog.setMultiSelectionEnabled(_multiselect);
         
         JFrame _form=new JFrame();
-        ImageIcon _icon=new ImageIcon(Mime.resources.saveFileImageURL());
+        ImageIcon _icon=new ImageIcon(Mime.resources.openFileImageURL());
         _form.setIconImage(_icon.getImage());
         
-        Object _dresult=_dialog.showSaveDialog(_form);
+        Object _dresult=_dialog.showOpenDialog(_form);
         int _chooserresult=-1; _form.dispose();
         if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
         
@@ -251,11 +251,13 @@ public class SaveFileDialog {
             case JFileChooser.APPROVE_OPTION:
                 _result=DialogResult.OK; 
                 _filename=_dialog.getSelectedFile().getPath();  
+                
                 try {
+                       
                     if (_checkexistingdirectory) {   
                         if (!Directory.exists(Path.getDirectory(_filename))) {
                             _result=DialogResult.None;
-                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Information);
+                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
                             return _result;
                         }
                     }
@@ -263,11 +265,11 @@ public class SaveFileDialog {
                     if (_checkexistingfile) {
                         if (!File.exists(_filename)) {
                             _result=DialogResult.None;
-                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Information);
+                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
                             return _result;
                         }
                     }
-                    
+                
                     if (Path.getExtension(_filename).equals("")) {
                        FileNameExtensionFilter _currentfilter=(FileNameExtensionFilter) _dialog.getFileFilter();
                        String[] exts=_currentfilter.getExtensions();
@@ -297,5 +299,4 @@ public class SaveFileDialog {
         
         return _result;
     }
-        
 }
