@@ -10,7 +10,12 @@ package mime;
  */
 public class Process {
     
-    public static void start(String filename) {
+    /**
+     * Executes or opens the file specified.
+     * @param filename File path to be opened.
+     * @return Process associated to the execution of the specified file, otherwise null if something went wrong.
+     */
+    public static java.lang.Process start(String filename) {
         java.lang.Process p=null;
         
         try {
@@ -23,6 +28,7 @@ public class Process {
                     p.destroy();
                 }
                 catch (Exception ex2) {
+                    ex2.printStackTrace();
                 }
                 finally {
                     p=null; System.gc();
@@ -30,6 +36,8 @@ public class Process {
             }
             ex.printStackTrace();
         }
+        
+        return p;
     }
         
 }
