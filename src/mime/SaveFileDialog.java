@@ -200,6 +200,7 @@ public class SaveFileDialog {
         JFileChooser _dialog=new JFileChooser(_initialdirectory);
         _dialog.setDialogTitle(_title);
         _dialog.setAcceptAllFileFilterUsed((boolean) (_filter.equals("")));
+        _dialog.setApproveButtonToolTipText("Select specified path");
         
         if (_filter.trim().equals("")) _filter="All Files (*.*)|*.*";
         String[] _filtersections=_filter.split("\\|");
@@ -244,7 +245,7 @@ public class SaveFileDialog {
         _form.setIconImage(_icon.getImage());
         
         Object _dresult=_dialog.showSaveDialog(_form);
-        int _chooserresult=-1; _form.dispose();
+        int _chooserresult=-1;
         if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
         
         switch (_chooserresult) {
@@ -253,18 +254,43 @@ public class SaveFileDialog {
                 _filename=_dialog.getSelectedFile().getPath();  
                 try {
                     if (_checkexistingdirectory) {   
-                        if (!Directory.exists(Path.getDirectory(_filename))) {
-                            _result=DialogResult.None;
-                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Information);
-                            return _result;
+                        String _currentdirectory=Path.getDirectory(_filename);
+                        while (!Directory.exists(_currentdirectory)) {   
+                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
+                            _dresult=_dialog.showOpenDialog(_form);
+                            _chooserresult=-1; 
+                            if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
+                            
+                            switch (_chooserresult) {
+                                case JFileChooser.APPROVE_OPTION:
+                                    _currentdirectory=Path.getDirectory(_filename); break;
+                                case JFileChooser.CANCEL_OPTION:
+                                   _dialog=null; _form.dispose();
+                                   _result=DialogResult.Cancel; return _result;
+                                default: 
+                                   _dialog=null; _form.dispose();    
+                                   _result=DialogResult.None; return _result;  
+                            }
                         }
                     }
                 
                     if (_checkexistingfile) {
-                        if (!File.exists(_filename)) {
-                            _result=DialogResult.None;
-                            MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Information);
-                            return _result;
+                        while (!File.exists(_filename)) {
+                              MessageBox.show("Could not find file : " + _filename + ".", "File Unavailable", MessageBoxButton.OKOnly, MessageBoxIcon.Exclamation);
+                            _dresult=_dialog.showOpenDialog(_form);
+                            _chooserresult=-1; 
+                            if (_dresult!=null) _chooserresult=Converter.toInt(_dresult);
+                            
+                            switch (_chooserresult) {
+                                case JFileChooser.APPROVE_OPTION:
+                                    _filename=_dialog.getSelectedFile().getPath() ; break;
+                                case JFileChooser.CANCEL_OPTION:
+                                   _dialog=null; _form.dispose();
+                                   _result=DialogResult.Cancel; return _result;
+                                default: 
+                                   _dialog=null; _form.dispose();    
+                                   _result=DialogResult.None; return _result;  
+                            }
                         }
                     }
                     
@@ -295,6 +321,7 @@ public class SaveFileDialog {
             default: break;
         }
         
+        _dialog=null;  _form.dispose();
         return _result;
     }
         
