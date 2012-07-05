@@ -228,7 +228,6 @@ public class OpenFileDialog {
                 FileNameExtensionFilter _currentfilter = (FileNameExtensionFilter) _filter;
                 String[] _extensions=_currentfilter.getExtensions();
                 for (String ext:_extensions) {
-                    System.out.println(ext);
                     if (ext.trim().replace("*.", "").replace(".", "").toLowerCase().equals(_defaultextension.toLowerCase().replace(".", ""))) {
                         _dialog.setFileFilter(_filter); break;
                     }
