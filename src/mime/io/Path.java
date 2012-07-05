@@ -39,12 +39,12 @@ public class Path {
         
         java.io.File _file=new java.io.File(filename);
         if (_file.isFile()) {
-            Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9]+");
+            Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9\\*]+");
             Matcher _matcher=_pattern.matcher(filename);
             while (_matcher.find()) {
                 String _value=_matcher.group();
                 if (filename.endsWith(_value)) {
-                    _extension=_value; break;
+                    _extension=_value; break; 
                 }
             }
             _pattern=null; _matcher=null;
