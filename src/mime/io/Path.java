@@ -59,4 +59,34 @@ public class Path {
         return _extension;
     }
     
+    /**
+     * Gets the name section of the specified file. The name will not include parent directory and extension name associated into the path.
+     * @param filename Path to evaluate
+     * @return Name section of the specified path with its corresponding parent directory and extension name.
+     */
+    public static String getFileNameWithoutExtension(String filename) {
+        String _woextension="";
+        
+       java.io.File _file=new java.io.File(filename);
+       if (_file.isFile()) {
+           String[] _sections=filename.split("\\\\");
+           if (_sections.length > 0) {
+               String _name=_sections[_sections.length-1];
+               Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9\\*]+");
+               Matcher _matcher=_pattern.matcher(_name);
+               while (_matcher.find()) {
+                   String ext=_matcher.group();
+                   if (_name.trim().endsWith(ext.trim())) {
+                       _woextension=_name.replace(ext, ""); break;
+                   }
+               }
+              _matcher=null; _pattern=null;  System.gc();
+           }
+       }
+       else throw new FileUnavailableException(filename + " is not a valid file.");
+       
+      return _woextension;
+    }
+        
+    
 }
