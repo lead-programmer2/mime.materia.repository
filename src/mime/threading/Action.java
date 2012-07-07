@@ -98,8 +98,10 @@ public class Action {
 
                 @Override
                 public void invoke() {
-                    while (!_worker.isDone() &&
-                           !_worker.isCancelled()) _progress.invoke();
+                    if (_worker!=null) {
+                        while (!_worker.isDone() &&
+                               !_worker.isCancelled()) _progress.invoke();
+                    }
                 }
             });
             _progressdelegate.invoke();
