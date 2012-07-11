@@ -10,7 +10,7 @@ import java.net.InetAddress;
  * Mimics VB.Net My.Computer class.
  * @author seph
  */
-public class Computer {
+public final class Computer {
     
         /**
      * Mimics VB.Net My.Computer.Name class property and returns the current workstation host name.
