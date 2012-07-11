@@ -13,7 +13,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Encrypted text decryption class.
@@ -59,8 +59,7 @@ public class Decrypt {
                 
             init(_keyfactory.generateSecret(_keyspec));
            	  
-            BASE64Decoder decoder = new BASE64Decoder();  
-            byte[] _raw = decoder.decodeBuffer(value);
+            byte[] _raw = Base64.decodeBase64(value);
 	  
             byte[] _bytes = _cipher.doFinal(_raw);
    
