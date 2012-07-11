@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  * Mimics VB.Net InputBox method.
  * @author seph
  */
-public class InputBox {
+public final class InputBox {
     
     /**
      * Shows a modal dialog input box into the user screen.
