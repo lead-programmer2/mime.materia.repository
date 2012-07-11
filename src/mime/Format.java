@@ -32,6 +32,16 @@ public final class Format {
      * @param format Pattern string
      * @return String value of the specified number that is formatted into the specified pattern.
      */
+    public static String valueOf(byte value, String format) {
+        return valueOf(Converter.toDouble(value), format);
+    }
+    
+    /**
+     * Formats the specified numeric value depending on the given string pattern.
+     * @param value Value to be formatted
+     * @param format Pattern string
+     * @return String value of the specified number that is formatted into the specified pattern.
+     */
     public static String valueOf(short value, String format) {
         return valueOf(Converter.toDouble(value), format);
     }
