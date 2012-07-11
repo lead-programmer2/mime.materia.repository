@@ -182,4 +182,15 @@ public class Converter {
         }
     }
     
+    /**
+     * Converts the specified string value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(String value) {
+        return value.replace("'", "''").replace("\\", "\\\\");
+    }
+    
+    
+    
 }
