@@ -13,7 +13,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Text encryption class
@@ -63,7 +63,7 @@ public class Encrypt {
             byte[] _utf8 = value.getBytes("UTF8");
             byte[] _encrypted = _cipher.doFinal(_utf8);
 
-            return new BASE64Encoder().encode(_encrypted);
+            return Base64.encodeBase64String(_encrypted);
         } catch (javax.crypto.BadPaddingException ex) { ex.printStackTrace();
         } catch (IllegalBlockSizeException ex) { ex.printStackTrace();
         } catch (UnsupportedEncodingException ex) { ex.printStackTrace();
