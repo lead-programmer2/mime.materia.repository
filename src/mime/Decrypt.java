@@ -19,7 +19,7 @@ import org.apache.commons.codec.binary.Base64;
  * Encrypted text decryption class.
  * @author seph
  */
-public class Decrypt {
+public final class Decrypt {
     
     private static Cipher _cipher;
 
