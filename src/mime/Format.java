@@ -98,9 +98,8 @@ public final class Format {
                 int _counter=Converter.toInt(_decimals);
                 for (int i=0; i<= (_counter-1); i++) _zeros += "0";
             }
-            else _zeros="00";
             
-            _format="#######." + _zeros;
+            _format="#######" + (_zeros.equals("")? "":".").toString() + _zeros;
         }
         else {
             _matches=getMatch(_nonfixedpattern, format);
@@ -113,9 +112,8 @@ public final class Format {
                     for (int i=0; i<= _counter-2; i++) _zeros += "0";
                     _zeros+="0";
                 }
-                else _zeros="00";
                 
-                _format="###,###,###,###,###." + _zeros;
+                _format="###,###,###,###,###" + (_zeros.equals("")? "":".").toString() + _zeros;
             }
         }
         
@@ -134,8 +132,25 @@ public final class Format {
      */
     public static String valueOf(java.sql.Date date, String format) {
          String _value=Converter.toString(date);
+        String _format=format;
+        String _match = "";
+        String _shortpattern="(S|s)(H|h)(O|o)(R|r)(T|t)[\\n\\r\\t (D|d)(A|a)(T|t)(E|e)]+";
+        String _longpattern="(L|l)(O|o)(N|n)(G|g)[\\n\\r\\t (D|d)(A|a)(T|t)(E|e)]+";
         
-        SimpleDateFormat _formatter=new SimpleDateFormat(format);
+        _match=getMatch(_shortpattern, format);
+        if (!_match.equals("") &&
+            _match.equals(format)) _format="MM/dd/yyyy"; 
+        else {
+            _match=getMatch(_longpattern, format);
+            if (!_match.equals("") &&
+                _match.equals(format)) _format="MMMM dd, yyyyy hh:mm:ss a, EEEE";
+            else { 
+                _match=getMatch("(T|t)(T|t)", format);
+                if (!_match.equals("")) _format=format.replace(_match, "a");
+            }
+        }
+        
+        SimpleDateFormat _formatter=new SimpleDateFormat(_format);
         _value=_formatter.format(date);
         _formatter=null; System.gc();
         
@@ -150,8 +165,24 @@ public final class Format {
      */
     public static String valueOf(Date date, String format) {
         String _value="";
+        String _format=format;
+        String _match = "";
+        String _shortpattern="((S|s)(H|h)(O|o)(R|r)(T|t)(D|d)(A|a)(T|t)(E|e)|(S|s)(H|h)(O|o)(R|r)(T|t)[\\n\\r\\t ]+(D|d)(A|a)(T|t)(E|e))|(S|s)(H|h)(O|o)(R|r)(T|t)";
+        String _longpattern="((L|l)(O|o)(N|n)(G|g)(D|d)(A|a)(T|t)(E|e)|(L|l)(O|o)(N|n)(G|g)[\\n\\r\\t ]+(D|d)(A|a)(T|t)(E|e))|(L|l)(O|o)(N|n)(G|g)";
         
-        SimpleDateFormat _formatter=new SimpleDateFormat(format);
+        _match=getMatch(_shortpattern, format);
+        if (!_match.equals("")) _format="MM/dd/yyyy"; 
+        else {
+            _match=getMatch(_longpattern, format);
+            if (!_match.equals("") &&
+                 _match.equals(format)) _format="MMMM dd, yyyy hh:mm:ss a, EEEE";
+            else { 
+                _match=getMatch("(T|t)(T|t)", format);
+                if (!_match.equals("")) _format=format.replace(_match, "a");
+            }
+        }
+        
+        SimpleDateFormat _formatter=new SimpleDateFormat(_format);
         _value=_formatter.format(date);
         _formatter=null; System.gc();
         
