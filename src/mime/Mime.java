@@ -11,7 +11,7 @@ import mime.resources.ResourceManager;
  * Global library class.
  * @author seph
  */
-public class Mime {
+public final class Mime {
     
     /**
      * Gets the registry key value associated with the specified application, application section and key.
