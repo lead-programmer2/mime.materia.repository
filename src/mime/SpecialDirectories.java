@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
  * Mimics VB.Net SpecialDirectories class.
  * @author seph
  */
-public class SpecialDirectories {
+public final class SpecialDirectories {
     
       /**
        * All Users > Desktop
