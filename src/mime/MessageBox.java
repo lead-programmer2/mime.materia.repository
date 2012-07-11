@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  * Mimics VB.Net System.Windows.Forms.MessageBox class.
  * @author seph
  */
-public class MessageBox {
+public final class MessageBox {
     
     /**
      * Abort option
