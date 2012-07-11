@@ -4,9 +4,17 @@
  */
 package mime;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.PixelGrabber;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 
@@ -54,7 +62,7 @@ public class Converter {
         
         return _value;
     }
-    
+     
     /**
      * Returns whether the specified value is null.
      * @param value Value to evaluate.
@@ -76,6 +84,76 @@ public class Converter {
         catch (Exception ex) {
             throw new InvalidCastException(ex.getMessage());
         }
+    }
+    
+    /**
+     * Converts the specified Image object into a BufferedImage object having the image qualified for other conversions.
+     * @param image Image to be converted.
+     * @return BufferedImage representation of the specified Image object.
+     */
+     public static BufferedImage toBufferedImage(Image image) {
+ 
+        if (image instanceof BufferedImage) {
+            return (BufferedImage) image;
+        }
+ 
+        // This code ensures that all the pixels in the image are loaded
+        image = new ImageIcon(image).getImage();
+ 
+        // Determine if the image has transparent pixels
+        boolean hasAlpha = hasAlpha(image);
+ 
+        // Create a buffered image with a format that's compatible with the
+        // screen
+        BufferedImage bimage = null;
+        GraphicsEnvironment ge = GraphicsEnvironment
+                .getLocalGraphicsEnvironment();
+        try {
+            // Determine the type of transparency of the new buffered image
+            int transparency = Transparency.OPAQUE;
+            if (hasAlpha == true) {
+                transparency = Transparency.BITMASK;
+            }
+ 
+            // Create the buffered image
+            GraphicsDevice gs = ge.getDefaultScreenDevice();
+            GraphicsConfiguration gc = gs.getDefaultConfiguration();
+            bimage = gc.createCompatibleImage(image.getWidth(null), image.getHeight(null), transparency);
+        } catch (HeadlessException ex) { ex.printStackTrace();
+        } // No screen
+ 
+        if (bimage == null) {
+            // Create a buffered image using the default color model
+            int type = BufferedImage.TYPE_INT_RGB;
+            if (hasAlpha == true) {
+                type = BufferedImage.TYPE_INT_ARGB;
+            }
+            bimage = new BufferedImage(image.getWidth(null), image
+                    .getHeight(null), type);
+        }
+ 
+        // Copy image to buffered image
+        Graphics g = bimage.createGraphics();
+ 
+        // Paint the image onto the buffered image
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+ 
+        return bimage;
+    }
+ 
+    private static boolean hasAlpha(Image image) {
+        if (image instanceof BufferedImage) {
+            return ((BufferedImage) image).getColorModel().hasAlpha();
+        }
+ 
+        PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
+        try {
+            pg.grabPixels();
+        } catch (InterruptedException e) {
+        }
+ 
+        return pg.getColorModel().hasAlpha();
     }
     
     /**
@@ -102,6 +180,39 @@ public class Converter {
             ex.printStackTrace();
         }
             
+        return _bytes;
+    }
+    
+    /**
+     * Converts the specified image into array of bytes.
+     * @param image Image to be converted.
+     * @return Byte array representation of the specified image.
+     */
+    public static byte[] toByteArray(ImageIcon image) {
+        return toByteArray(image.getImage());
+    }
+    
+    /**
+     * Converts the specified image into array of bytes.
+     * @param image Image to be converted.
+     * @return Byte array representation of the specified image.
+     */
+    public static byte[] toByteArray(Image image) {
+        byte[] _bytes=null;
+        BufferedImage _image=toBufferedImage(image);
+        ByteArrayOutputStream _stream=new ByteArrayOutputStream();
+        
+        try {
+            ImageIO.write(_image, "png", _stream);
+            _stream.flush();
+            _bytes=_stream.toByteArray();
+            _stream.close(); _stream=null; System.gc();
+            
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
         return _bytes;
     }
     
@@ -140,7 +251,53 @@ public class Converter {
         }
     }
     
-   
+   /**
+    * Converts the specified array of bytes into a File object.
+    * @param bytes Byte array to be converted
+    * @param filename Path destination
+    * @return File object to where the array of bytes has been written, otherwise null if something went wrong.
+    */
+    public static File toFile(byte[] bytes, String filename) {
+        return toFile(bytes, new File(filename));
+    }
+    
+    /**
+     * Converts the specified array of bytes into a File object.
+     * @param bytes Byte array to be converted
+     * @param file File output destination.
+     * @return File object to where the array of bytes has been written, otherwise null if something went wrong.
+     */
+    public static File toFile(byte[] bytes, File file) {
+        File _file=file;
+        
+        FileOutputStream _stream = null;
+        try {
+            _stream=new FileOutputStream(file);
+            _stream.write(bytes);
+            _file=file; 
+        }
+        catch (Exception ex){
+            _file=null;
+            ex.printStackTrace();
+        }
+        finally {
+            if (_stream!=null) {
+                try {
+                    _stream.close();
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            
+            _stream=null; System.gc();
+            
+        }
+        
+        
+        return _file;
+    }
+    
     /**
      * Converts the specified value into floating point numeric data. May throw a InvalidCastException if value can't be converted.
      * @param value Value to convert.
@@ -153,6 +310,24 @@ public class Converter {
         catch (Exception ex) {
             throw new InvalidCastException(ex.getMessage());
         }
+    }
+    
+    /**
+     * Converts the specified image into its corresponding hexadecimal string representation.
+     * @param image Image to be converted
+     * @return Hexadecimal string representation of the specified image.
+     */
+    public static String toHexadecimalString(ImageIcon image) {
+        return toHexadecimalString(image.getImage());
+    }
+    
+    /**
+     * Converts the specified image into its corresponding hexadecimal string representation.
+     * @param image Image to be converted
+     * @return Hexadecimal string representation of the specified image.
+     */
+    public static String toHexadecimalString(Image image) {
+        return toHexadecimalString(toByteArray(image));
     }
     
     /**
@@ -180,6 +355,25 @@ public class Converter {
      */
     public static String toHexadecimalString(byte[] bytes) {
         return Hex.encodeHexString(bytes);
+    }
+    
+    /**
+     * Converts the specified array of bytes into ImageIcon object.
+     * @param bytes Byte array to be converted.
+     * @return ImageIcon object representation of the specified byte array, otherwise null if something went wrong.
+     */
+    public static ImageIcon toImage(byte[] bytes) {
+        ImageIcon _image=null;
+        
+        try {
+            BufferedImage _buffered=ImageIO.read(new ByteArrayInputStream(bytes));
+            _image=new ImageIcon(_buffered);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        return _image;
     }
     
     /**
