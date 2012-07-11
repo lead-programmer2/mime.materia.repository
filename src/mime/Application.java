@@ -8,7 +8,7 @@ package mime;
  * Mimics VB.Net Application shared class.
  * @author seph
  */
-public class Application {
+public final class Application {
     
     /**
      * Gets the current application directory path.
