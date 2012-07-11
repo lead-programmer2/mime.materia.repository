@@ -5,6 +5,7 @@
 package mime;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Primitive data-typed value converter.
@@ -191,6 +192,168 @@ public class Converter {
         return value.replace("'", "''").replace("\\", "\\\\");
     }
     
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(byte value) {
+        return toSqlValidString(value, 0);
+    }
     
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param decimals Decimal places.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(byte value, int decimals) {
+        return toSqlValidString(Converter.toDouble(value), decimals);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+     public static String toSqlValidString(int value) {
+         return toSqlValidString(value, 0);
+     }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param decimals Decimal places.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(int value, int decimals) {
+        return toSqlValidString(Converter.toDouble(value), decimals);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(long value) {
+        return toSqlValidString(value, 0);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param decimals Decimal places.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(long value, int decimals) {
+        return toSqlValidString(Converter.toDouble(value), decimals);
+    }
+        
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(short value) {
+        return toSqlValidString(value, 0);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param decimals Decimal places.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(short value, int decimals) {
+        return toSqlValidString(Converter.toDouble(value), decimals);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(float value) {
+        return toSqlValidString(value, 2);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param decimals Decimal places.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(float value, int decimals) {
+        return toSqlValidString(Converter.toDouble(value), decimals);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(double value) {
+        return toSqlValidString(value, 2);
+    }
+    
+    /**
+     * Converts the specified numeric value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param decimals Decimal places.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(double value, int decimals) {
+        return Format.valueOf(value, "F" + decimals);
+    }
+    
+    /**
+    * Converts the specified date value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(Date value) {
+        return toSqlValidString(value, false);
+    }
+    
+    /**
+     * Converts the specified date value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param withhours Determines whether result should also include time part.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(Date value, boolean withhours) {
+        String _value=value.toString();
+        String _format="yyyy-MM-dd";
+        
+        if (withhours) _format += " HH:mm:ss";
+        _value=Format.valueOf(value, _format);
+        
+        return _value;
+    }
+    
+    /**
+    * Converts the specified date value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(java.sql.Date value) {
+        return toSqlValidString(value, false);
+    }
+    
+    /**
+     * Converts the specified date value into its SQL-qualified string representation.
+     * @param value Value to convert
+     * @param withhours Determines whether result should also include time part.
+     * @return SQL-qualified string representation of the specified value.
+     */
+    public static String toSqlValidString(java.sql.Date value, boolean withhours) {
+        String _value=value.toString();
+        String _format="yyyy-MM-dd";
+        
+        if (withhours) _format += " HH:mm:ss";
+        _value=Format.valueOf(value, _format);
+        
+        return _value;
+    }
     
 }
