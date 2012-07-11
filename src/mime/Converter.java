@@ -4,8 +4,11 @@
  */
 package mime;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Primitive data-typed value converter.
@@ -76,6 +79,33 @@ public class Converter {
     }
     
     /**
+     * Converts the specified file into an array of byte.
+     * @param filename Path of the file to convert
+     * @return Byte array representation of the specified file.
+     */
+    public static byte[] toByteArray(String filename) {
+        return toByteArray(new File(filename));
+    }
+    
+    /**
+     * Converts the specified file into an array of byte.
+     * @param file File to convert.
+     * @return Byte array representation of the specified file.
+     */
+    public static byte[] toByteArray(File file) {
+        byte[] _bytes=null;
+        
+        try {
+            _bytes=FileUtils.readFileToByteArray(file);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+            
+        return _bytes;
+    }
+    
+    /**
      * Converts the specified value into Date data. May throw a InvalidCastException if value can't be converted.
      * @param value Value to convert.
      * @return Returns the Date representation of the specified value.
@@ -123,6 +153,33 @@ public class Converter {
         catch (Exception ex) {
             throw new InvalidCastException(ex.getMessage());
         }
+    }
+    
+    /**
+     * Converts the specified file into its corresponding hexadecimal string representation.
+     * @param filename Path of the file to be converted.
+     * @return Hexadecimal string representation of the specified file.
+     */
+    public static String toHexadecimalString(String filename) {
+        return toHexadecimalString(new File(filename));
+    }
+    
+    /**
+     * Converts the specified file object into its corresponding hexadecimal string representation.
+     * @param file File to be converted
+     * @return Hexadecimal string representation of the specified file.
+     */
+    public static String toHexadecimalString(File file) {
+        return toHexadecimalString(toByteArray(file));
+    }
+    
+    /**
+     * Converts the specified byte array into corresponding hexadecimal string representation.
+     * @param bytes Byte array to convert
+     * @return Hexadecimal string representation of the specified byte array.
+     */
+    public static String toHexadecimalString(byte[] bytes) {
+        return Hex.encodeHexString(bytes);
     }
     
     /**
