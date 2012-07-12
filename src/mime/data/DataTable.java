@@ -114,7 +114,7 @@ public class DataTable {
         try {
             _columns.dispose();  _columns=null;
             _rows.dispose(); _rows=null;
-            super.finalize(); 
+            finalize(); 
             DataTable _current=this;
             _current=null; System.gc();
         }
@@ -289,6 +289,8 @@ public class DataTable {
                        case java.sql.Types.TIME:
                        case java.sql.Types.TIMESTAMP:
                            _datatype=java.util.Date.class; break;
+                       case java.sql.Types.BLOB: 
+                           _datatype=byte[].class; break;
                        default: break;
                    }
                    
