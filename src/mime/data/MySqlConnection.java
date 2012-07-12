@@ -35,31 +35,19 @@ public class MySqlConnection {
      */
     public MySqlConnection(String connectionstring) {
         String _base="[\\w]+;";
-        String server=getMatch("SERVER=" + _base, connectionstring).replace(";", "");
-        String database=getMatch("DATABASE=" + _base, connectionstring).replace(";", "");
-        String uid=getMatch("UID=" + _base, connectionstring).replace(";", "");
-        String pwd=getMatch("PWD=" + _base, connectionstring).replace(";", "");
-        String port=getMatch("PORT=[0-9]+", connectionstring).replace(";", "");
+        String server=getMatch("(S|s)(E|e)(R|r)(V|v)(E|e)(R|r)[\\n\\r\\t =]+" + _base, connectionstring).replace(";", "");
+        String database=getMatch("(D|d)(A|a)(T|t)(A|a)(B|b)(A|a)(S|s)(E|e)[\\n\\r\\t =]+" + _base, connectionstring).replace(";", "");
+        String uid=getMatch("(U|u)(I|i)(D|d)[\\n\\r\\t =]+" + _base, connectionstring).replace(";", "");
+        String pwd=getMatch("(P|p)(W|w)(D|d)[\\n\\r\\t =]+" + _base, connectionstring).replace(";", "");
+        String port=getMatch("(P|p)(O|o)(R|r)(T|t)[\\n\\r\\t =]+[0-9]+", connectionstring).replace(";", "");
         
-        server=replace("SERVER=", server, "");
-        database=replace("DATABASE=", database, "");
-        uid=replace("UID=", uid, "");
-        pwd=replace("PWD=", pwd, "");
-        port=replace("PORT=", port, "");
-         
-        if (port=="") port="3306";
+        _server=matchAndReplace("(S|s)(E|e)(R|r)(V|v)(E|e)(R|r)[\\n\\r\\t =]+", server, ""); 
+        _database=matchAndReplace("(D|d)(A|a)(T|t)(A|a)(B|b)(A|a)(S|s)(E|e)[\\n\\r\\t =]+", database, ""); 
+        _userid=matchAndReplace("(U|u)(I|i)(D|d)[\\n\\r\\t =]+", uid, ""); 
+        _password=matchAndReplace("(P|p)(W|w)(D|d)[\\n\\r\\t =]+", pwd, ""); 
         
-        System.out.println(server);
-        System.out.println(database);
-        System.out.println(uid);
-        System.out.println(pwd);
-        System.out.println(port);
-        
-        _server=server; 
-        _database=database; 
-        _userid=uid; 
-        _password=pwd; 
-        _port=Converter.toInt(port);
+        if (port=="") _port=3306;
+        else _port=Converter.toInt(matchAndReplace("(P|p)(O|o)(R|r)(T|t)[\\n\\r\\t =]+", port, ""));
     }
     
     /**
@@ -182,7 +170,7 @@ public class MySqlConnection {
     
     private String getMatch(String searchpattern, String target) {
         String _match="";
-        Pattern _pattern=Pattern.compile(searchpattern, Pattern.CASE_INSENSITIVE);
+        Pattern _pattern=Pattern.compile(searchpattern);
         Matcher _matcher=_pattern.matcher(target);
         boolean _matches=_matcher.find();
         if (_matches) _match=_matcher.group();
@@ -260,6 +248,18 @@ public class MySqlConnection {
                 return false;
             }
         }
+    }
+    
+    private String matchAndReplace(String searchpattern, String target, String replacement) {    
+        Pattern _pattern=Pattern.compile(searchpattern);
+        Matcher _matcher=_pattern.matcher(target);
+        StringBuffer _buffer = new StringBuffer(target.length());
+        boolean _matches=_matcher.find();
+        if (_matches) {
+            _matcher.appendReplacement(_buffer, Matcher.quoteReplacement(replacement));
+            _matcher.appendTail(_buffer);
+        }
+        return _buffer.toString();
     }
     
     /**
