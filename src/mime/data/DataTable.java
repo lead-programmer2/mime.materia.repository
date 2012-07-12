@@ -290,6 +290,9 @@ public class DataTable {
                        case java.sql.Types.TIMESTAMP:
                            _datatype=java.util.Date.class; break;
                        case java.sql.Types.BLOB: 
+                       case java.sql.Types.BINARY:
+                       case java.sql.Types.LONGVARBINARY:
+                       case java.sql.Types.VARBINARY:
                            _datatype=byte[].class; break;
                        default: break;
                    }
@@ -306,7 +309,8 @@ public class DataTable {
                 while (resultset.next()) {    
                     Object values[]=new Object[_columncount];    
                     for (DataColumn col:_columns) {    
-                        values[col.ordinal()]=resultset.getString(col.getColumnName());    
+                        if (!col.getDataType().getName().equals(byte[].class.getName())) values[col.ordinal()]=resultset.getString(col.getColumnName());    
+                        else  values[col.ordinal()]=resultset.getBytes(col.getColumnName()); 
                     }    
                    DataRow rw= _rows.add(values); rw.acceptChanges();
                 }
