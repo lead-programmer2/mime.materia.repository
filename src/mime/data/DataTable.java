@@ -308,8 +308,9 @@ public class DataTable {
                     for (DataColumn col:_columns) {    
                         values[col.ordinal()]=resultset.getString(col.getColumnName());    
                     }    
-                    _rows.add(values);     
+                   DataRow rw= _rows.add(values); rw.acceptChanges();
                 }
+                
             }
             catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage());
