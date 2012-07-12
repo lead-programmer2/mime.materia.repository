@@ -68,12 +68,24 @@ public class QueryBuilder {
                    }
                }
                
+               
                for (DataRow rw:_table.rows()) {
                    String _sqlline="";
                     
                    String _pkvalue="";
-                   Object _pkobject=rw.getItem(_pkcolumn);
-                            
+                   Object _pkobject=null;
+                        
+                   if (rw.rowState()==DataRowState.Deleted ||
+                       rw.rowState()==DataRowState.Detached) _pkobject=rw.getItem(_pkcolumn, DataRowVersion.Original);
+                   else {
+                       try {
+                           _pkobject=rw.getItem(_pkcolumn, DataRowVersion.Original);
+                       }
+                       catch (Exception ex) {
+                           _pkobject=rw.getItem(_pkcolumn);
+                       }
+                   }
+                   
                    if (_pkobject==null) _pkvalue="NULL";        
                    else _pkvalue="'" + Converter.toSqlValidString(_pkobject.toString()) + "'";
                                               
@@ -86,11 +98,10 @@ public class QueryBuilder {
                            String _insertentries="";
                            
                            for (DataColumn col:_table.columns()) {
-                               Object _value=rw.getItem(_tablename);
+                               Object _value=rw.getItem(col.getColumnName());
                                if (_value==null) _insertentries += (_insertentries.equals("")? "":", ") + "NULL";
                                else {
                                    String _type=col.getDataType().getName();
-                                   
                                    if (_type.equals(String.class.getName())) _insertentries += (_insertentries.equals("")? "":", ") + "'" + Converter.toSqlValidString(_value.toString()) + "'";
                                    else if (_type.equals(java.util.Date.class.getName()) ||
                                             _type.equals(java.sql.Date.class.getName())) _insertentries += (_insertentries.equals("")? "":", ") + "'" + Converter.toSqlValidString(Converter.toDate(_value), true) + "'";
@@ -124,7 +135,7 @@ public class QueryBuilder {
                                       _updatecolumns;
                            
                            for (DataColumn col:_table.columns()) { 
-                               Object _value=rw.getItem(_tablename); 
+                               Object _value=rw.getItem(col.getColumnName()); 
                                String _finalizedvalue="";
                                
                                if (_value==null) _finalizedvalue = "NULL";
@@ -144,8 +155,7 @@ public class QueryBuilder {
                                            _hex=Converter.toHexadecimalString((byte[]) _value);
                                        }
                                        catch (Exception ex) {
-                                           _hex="";
-                                           ex.printStackTrace();
+                                           _hex=""; ex.printStackTrace();
                                        }
                                        
                                        if (_hex.equals("")) _finalizedvalue="NULL";
@@ -158,11 +168,14 @@ public class QueryBuilder {
                                
                                Pattern _pattern=Pattern.compile("@" + col.getColumnName());
                                Matcher _matcher=_pattern.matcher(_sqlline);
-                               if (_matcher.find()) _matcher.replaceFirst(_finalizedvalue);
-                               _matcher=null; _pattern=null; System.gc();
+                               StringBuffer _buffer=new StringBuffer(_sqlline.length());
+                               if (_matcher.find()) _matcher.appendReplacement(_buffer, Matcher.quoteReplacement(_finalizedvalue));
+                               _matcher.appendTail(_buffer);
+                               _sqlline=_buffer.toString();
+                               _matcher=null; _pattern=null; System.gc(); 
                            }
                            
-                           _sqlline += "\nWHERE (`" + _pkcolumn + "` = " + _pkvalue + ");"; break;
+                            _sqlline += "\nWHERE (`" + _pkcolumn + "` = " + _pkvalue + ");"; break;
                            
                        case Deleted:
                        case Detached:
@@ -171,7 +184,11 @@ public class QueryBuilder {
                        default: break;
                    }
                    
-                   if (!_sqlline.equals("")) _builder.append(_sqlline);
+                   if (!_sqlline.equals("")) {
+                       String _current=_builder.toString();
+                       if (!_current.equals("")) _builder.append("\n");
+                       _builder.append(_sqlline);
+                   }
                }
            }
         }
