@@ -67,7 +67,6 @@ public final class Encrypt {
         } catch (javax.crypto.BadPaddingException ex) { ex.printStackTrace();
         } catch (IllegalBlockSizeException ex) { ex.printStackTrace();
         } catch (UnsupportedEncodingException ex) { ex.printStackTrace();
-        } catch (java.io.IOException ex) { ex.printStackTrace();
         } catch (NoSuchAlgorithmException ex) { ex.printStackTrace();
         } catch (InvalidKeySpecException ex) { ex.printStackTrace();
         } catch (InvalidKeyException ex) { ex.printStackTrace();
