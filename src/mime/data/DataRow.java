@@ -42,8 +42,7 @@ public class DataRow {
     public void acceptChanges() {
         if (_rowState!=DataRowState.Deleted &&
             _rowState!=DataRowState.Detached) {
-             _previousvalues.clear();
-            if (_rowState!=DataRowState.Added) _rowState= DataRowState.Unchanged;
+             _previousvalues.clear(); _rowState= DataRowState.Unchanged;
         }
     }
     
