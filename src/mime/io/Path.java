@@ -37,24 +37,16 @@ public class Path {
     public static String getExtension(String filename) {
         String _extension="";
         
-        java.io.File _file=new java.io.File(filename);
-        if (_file.isFile()) {
-            Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9\\*]+");
-            Matcher _matcher=_pattern.matcher(filename);
-            while (_matcher.find()) {
-                String _value=_matcher.group();
-                if (filename.endsWith(_value)) {
-                    _extension=_value; break; 
-                }
-            }
-            _pattern=null; _matcher=null;
-        }
-        else {
-            _file=null; System.gc();
-            throw new InvalidFileException("File is not available.");
-        }
-       
-        _file=null; System.gc();
+         Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9\\*]+");   
+         Matcher _matcher=_pattern.matcher(filename);
+   
+         while (_matcher.find()) {   
+             String _value=_matcher.group();   
+             if (filename.endsWith(_value)) {   
+                 _extension=_value; break;    
+             }   
+         }   
+         _pattern=null; _matcher=null; System.gc();
         
         return _extension;
     }
@@ -67,23 +59,21 @@ public class Path {
     public static String getFileNameWithoutExtension(String filename) {
         String _woextension="";
         
-       java.io.File _file=new java.io.File(filename);
-       if (_file.isFile()) {
-           String[] _sections=filename.split("\\\\");
-           if (_sections.length > 0) {
-               String _name=_sections[_sections.length-1];
-               Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9\\*]+");
-               Matcher _matcher=_pattern.matcher(_name);
-               while (_matcher.find()) {
-                   String ext=_matcher.group();
-                   if (_name.trim().endsWith(ext.trim())) {
-                       _woextension=_name.replace(ext, ""); break;
-                   }
-               }
-              _matcher=null; _pattern=null;  System.gc();
-           }
-       }
-       else throw new InvalidFileException(filename + " is not a valid file.");
+        String[] _sections=filename.split("\\\\");   
+        if (_sections.length > 0) {   
+            String _name=_sections[_sections.length-1];
+            Pattern _pattern=Pattern.compile("\\.[a-zA-Z0-9\\*]+");
+            Matcher _matcher=_pattern.matcher(_name);
+
+            while (_matcher.find()) {   
+                String ext=_matcher.group();   
+                if (_name.trim().endsWith(ext.trim())) {   
+                    _woextension=_name.replace(ext, ""); break;   
+                }   
+            }
+              
+            _matcher=null; _pattern=null;  System.gc();   
+        }
        
       return _woextension;
     }
