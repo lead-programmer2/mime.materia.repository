@@ -200,7 +200,7 @@ public class QueryBuilder {
     private boolean _isdisposed=false;
     
     /**
-     * Returns whether the current object has already called its finalized method so that the current class will be 
+     * Returns whether the current class has already called its finalized method so that the current class will be 
      * swiped out by the garbage collection or not.
      * @return Returns True if the current class already called the dispose method, otherwise false.
      */
