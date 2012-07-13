@@ -144,7 +144,8 @@ public class StreamReader {
         
          try {
              String _newline=System.getProperty("line.separator");
-            while (_reader.hasNextLine()) _builder.append(_reader.nextLine() + _newline);
+             if (_reader.hasNextLine())  _builder.append(_reader.nextLine());
+             while (_reader.hasNextLine()) _builder.append(_newline + _reader.nextLine());
         }
         catch (Exception ex) {
             throw new FileReaderException(ex.getMessage());
