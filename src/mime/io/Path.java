@@ -51,7 +51,7 @@ public class Path {
         }
         else {
             _file=null; System.gc();
-            throw new FileUnavailableException("File is not available.");
+            throw new InvalidFileException("File is not available.");
         }
        
         _file=null; System.gc();
@@ -83,7 +83,7 @@ public class Path {
               _matcher=null; _pattern=null;  System.gc();
            }
        }
-       else throw new FileUnavailableException(filename + " is not a valid file.");
+       else throw new InvalidFileException(filename + " is not a valid file.");
        
       return _woextension;
     }
