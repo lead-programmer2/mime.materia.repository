@@ -4,8 +4,8 @@
  */
 package mime.io;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 
 /**
  * Mimics VB.Net System.IO.StreamWriter class.
@@ -13,9 +13,10 @@ import java.io.FileWriter;
  */
 public class StreamWriter {
     
-    private BufferedWriter _writer=null;
+    private OutputStreamWriter _writer=null;
     private java.io.File _file;
     private boolean _append=true;
+    private String _charset="";
     
     /**
      * Creates a new instance of StreamWriter
@@ -39,12 +40,26 @@ public class StreamWriter {
     
     /**
      * Creates a new instance of StreamWriter
+     * @param filename Path of the file for the output.
+     * @param charset Character encoding.
+     * @param append Determines whether to append written contents into the file. If 
+     * append is set to True and the file is existing, the written contents will just be
+     * appended / added into the existing file contents. Otherwise, written contents will
+     * replace the existing file contents.
+     */
+    public StreamWriter(String filename, String charset, boolean append) {
+       this(new java.io.File(filename), charset, append);     
+    }
+      
+    /**
+     * Creates a new instance of StreamWriter
      * @param file File to be written
      */
     public StreamWriter(java.io.File file) {
         this(file, true);
     }
     
+       
     /**
      * Creates a new instance of StreamWriter
      * @param file File to be written
@@ -54,8 +69,20 @@ public class StreamWriter {
      * replace the existing file contents.
      */
     public StreamWriter(java.io.File file, boolean append) {
-        if (!file.isFile()) throw new InvalidFileException(file.getPath() + " is not a valid file.");
-        _file=file; _append=append;
+        this(file, "", append);
+    }
+       
+    /**
+     * Creates a new instance of StreamWriter
+     * @param file File to be written
+     * @param charset Character encoding.
+     * @param append Determines whether to append written contents into the file. If 
+     * append is set to True and the file is existing, the written contents will just be
+     * appended / added into the existing file contents. Otherwise, written contents will
+     * replace the existing file contents.
+     */
+    public StreamWriter(java.io.File file, String charset, boolean append) {
+        _file=file; _append=append; _charset=charset;
     }
     
     /**
@@ -88,8 +115,7 @@ public class StreamWriter {
     public void dispose() {
          _isdisposed=true;
         try {
-            close();
-            finalize();
+            close(); finalize();
             StreamWriter _current=this;
             _current=null; System.gc();
         }
@@ -116,7 +142,10 @@ public class StreamWriter {
     
     private void init() {
         try {
-            if (_writer==null) _writer=new BufferedWriter(new FileWriter(_file));
+            if (_writer==null) {
+                if (_charset.equals("")) _writer=new OutputStreamWriter(new FileOutputStream(_file));
+                else _writer=new OutputStreamWriter(new FileOutputStream(_file), _charset);
+            }
         }
         catch (Exception ex) {
             throw new FileWriterException(ex.getMessage());
@@ -149,6 +178,9 @@ public class StreamWriter {
      */
     public boolean write(String contents) {
         boolean _written=false;
+        
+        System.out.println(_append);
+                            
         if (!_file.exists()) {
             try {
                 _file.createNewFile();
@@ -157,6 +189,8 @@ public class StreamWriter {
                 throw new FileWriterException(ex.getMessage());
             }
         }
+        
+        if (!_file.isFile()) throw new InvalidFileException(_file.getPath() + " is not a valid file.");
         
         init();
         
@@ -191,7 +225,7 @@ public class StreamWriter {
         init();
         
         try {
-            _writer.newLine();
+            _writer.append("\n");
             _writer.append(contents);
             _written=true;
         }
