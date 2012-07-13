@@ -106,7 +106,7 @@ public class DataTable {
     
     /**
      * Dispose off any resources used by the class to free up memory space. May throw a RunTimeException especially in cases
-     * of multiple call of this method. To validate whether the current collection already called this method, check isDispose
+     * of multiple call of this method. To validate whether the current class already called this method, check isDispose
      * method.
      */
     public void dispose() {
@@ -171,7 +171,7 @@ public class DataTable {
     private boolean _isdisposed=false;
     
     /**
-     * Returns whether the current table has already called its finalized method so that the current class will be 
+     * Returns whether the current class has already called its finalized method so that the current class will be 
      * swiped out by the garbage collection or not.
      * @return Returns True if the current class already called the dispose method, otherwise false.
      */
