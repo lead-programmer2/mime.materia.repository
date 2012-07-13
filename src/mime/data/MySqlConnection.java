@@ -126,7 +126,7 @@ public class MySqlConnection {
    
     /**
      * Dispose off any resources used by the class to free up memory space. May throw a RunTimeException especially in cases
-     * of multiple call of this method. To validate whether the current collection already called this method, check isDispose
+     * of multiple call of this method. To validate whether the current class already called this method, check isDispose
      * method.
      */
     public void dispose() {
