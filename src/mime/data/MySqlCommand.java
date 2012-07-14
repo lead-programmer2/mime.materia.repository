@@ -106,7 +106,6 @@ public class MySqlCommand {
             Statement _statement=_connection.prepareStatement();
             MySqlQueryParser _parser=new MySqlQueryParser(_commandtext);
             Object[] _queries=_parser.statements();
-            System.out.println(_queries.length + " sql statements");
             
             if (_queries.length > 0) {
                 _affected=0;
