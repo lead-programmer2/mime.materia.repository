@@ -4,6 +4,7 @@
  */
 package mime.data;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mime.Converter;
@@ -215,6 +216,42 @@ public class MySqlConnection {
      */
     public String getServer() {
         return _server;
+    }
+    
+    /**
+     * Gets the lists of database tables inside the connected database.
+     * @return List of database table names inside the connected database.
+     */
+    public ArrayList<String> getTables() {
+        ArrayList<String> _tables=new ArrayList<String>();
+        
+        String _query= "SELECT\n" + 
+                       "`tables`.`TABLE_NAME`\n" +
+                       "FROM\n" + 
+                       "`TABLES` AS `tables`\n" +
+                       "WHERE\n" +
+                       "`tables`.`TABLE_SCHEMA` LIKE '" + Converter.toSqlValidString(_database) + "' AND\n" +
+                       "`tables`.`TABLE_COMMENT` NOT LIKE 'VIEW'\n" + 
+                       "ORDER BY\n" +
+                       "`TABLE_NAME`";
+        
+        MySqlConnection con=new MySqlConnection(_server, "information_schema", _userid, _password, _port);
+        
+        MySqlCommand cmd=con.createCommand();
+        cmd.setCommandText(_query);
+        boolean _isclosed=(!con.isOpen());
+        if (_isclosed) con.open();
+        DataTable _table=new DataTable();
+        _table.load(cmd.executeReader());
+        cmd.dispose(); 
+        for (DataRow rw:_table.rows()) _tables.add(rw.getItem("TABLE_NAME").toString());
+        _table.dispose();
+        if (_isclosed && 
+            isOpen()) con.close();
+        
+        con.dispose();
+        
+        return _tables;
     }
     
     /**
