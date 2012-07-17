@@ -21,6 +21,68 @@ public class File {
     }
     
     /**
+     * Performs file compression / archiving to a certain file.
+     * @param filename Path of the file to be compressed.
+     * @return File information of the output file, otherwise null if something went wrong.
+     */
+    public static java.io.File compress(String filename) {
+        java.io.File _file=null;
+        
+        Archiver  _archiver=new Archiver();
+        _file = _archiver.archive(filename);
+        _archiver.dispose();
+        
+        return _file; 
+    }
+    
+    /**
+     * Performs file compression / archiving to a certain file.
+     * @param filename Path of the file to be compressed.
+     * @param destination Output archive file destination
+     * @return  File information of the output file, otherwise null if something went wrong.
+     */
+    public static java.io.File compress(String filename, String destination) {
+        java.io.File _file=null;
+        
+        Archiver  _archiver=new Archiver();
+        _file = _archiver.archive(filename, destination);
+        _archiver.dispose();
+        
+        return _file;
+    }
+    
+    /**
+     * Performs file extraction from a certain compressed file.
+     * @param filename Path of the compressed file to be extracted
+     * @return Directory information to where the contents of the compressed file will be extracted, otherwise null if something went wrong.
+     */
+    public static java.io.File decompress(String filename) {
+         java.io.File _file=null;
+        
+        Archiver  _archiver=new Archiver();
+        _file = _archiver.extract(filename);
+        _archiver.dispose();
+        
+        return _file;
+    }
+    
+    /**
+     * Performs file extraction from a certain compressed file.
+     * @param filename Path of the compressed file to be extracted
+     * @param destination Output directory path.
+     * @return Directory information to where the contents of the compressed file will be extracted, otherwise null if something went wrong.
+     */
+    public static java.io.File decompress(String filename, String destination) {
+        java.io.File _file=null;
+        
+        Archiver  _archiver=new Archiver();
+        _file = _archiver.extract(filename, destination);
+        _archiver.dispose();
+        
+        return _file;
+    }
+    
+    /**
      * Deletes the specified file.
      * @param filename Path of the file to be deleted.
      * @return True if file was successfully deleted, otherwise false.
