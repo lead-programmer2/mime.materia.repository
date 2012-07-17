@@ -440,12 +440,14 @@ public class MySql {
                 String _error="";
                 
                 if (_errorstream!=null) {
-                    if (_errorstream.available() > 0) {     
+                    int _bytecount=_errorstream.available();
+                    if (_bytecount > 0) {     
                         StringWriter _writer = new StringWriter();
                     
                         try {
-                            IOUtils.copy(_errorstream, _writer);
-                            _error = _writer.toString();
+                            byte[] _bytes=new byte[_bytecount];
+                            _errorstream.read(_bytes);
+                            _error=new String(_bytes);
                         }
                         catch (Exception ex) {
                             ex.printStackTrace();
@@ -586,12 +588,14 @@ public class MySql {
                 String _error="";
                 
                 if (_errorstream!=null) {
-                    if (_errorstream.available() > 0) {     
+                     int _bytecount=_errorstream.available();
+                    if (_bytecount > 0) {     
                         StringWriter _writer = new StringWriter();
                     
                         try {
-                            IOUtils.copy(_errorstream, _writer);
-                            _error = _writer.toString();
+                            byte[] _bytes=new byte[_bytecount];
+                            _errorstream.read(_bytes);
+                            _error=new String(_bytes);
                         }
                         catch (Exception ex) {
                             ex.printStackTrace();
