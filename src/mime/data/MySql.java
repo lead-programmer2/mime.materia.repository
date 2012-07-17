@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import mime.Application;
+import mime.io.File;
 import mime.io.StreamWriter;
 import org.apache.commons.io.IOUtils;
 
@@ -374,6 +375,17 @@ public class MySql {
     
     /**
      * Performs a database backup procedure of the current connected database into the specified output file path.
+     * @param outputfile Database backup output file
+     * @return MySql dump procedure result information, otherwise null if something went wrong.
+     */
+    public MySqlDumpResult dump(java.io.File outputfile) {
+         String _outputfilename=outputfile.getPath();
+         if (_outputfilename.startsWith("/")) _outputfilename=outputfile.getPath().substring(1);
+         return dump(_outputfilename);
+    }
+    
+    /**
+     * Performs a database backup procedure of the current connected database into the specified output file path.
      * @param outputfilename Database backup output file path
      * @return MySql dump procedure result information, otherwise null if something went wrong.
      */
@@ -385,6 +397,18 @@ public class MySql {
         return dump(outputfilename, _params);
     }
     
+    /**
+     * Performs a database backup procedure of the current connected database into the specified output file path.
+     * @param outputfile Database backup output file.
+     * @param parameters MySql dump application valid parameters.
+     * @return MySql dump procedure result information, otherwise null if something went wrong.
+     */
+     public MySqlDumpResult dump(java.io.File outputfile, MySqlApplicationParameterCollection parameters) {
+         String _outputfilename=outputfile.getPath();
+         if (_outputfilename.startsWith("/")) _outputfilename=outputfile.getPath().substring(1);
+         return dump(_outputfilename, parameters);
+     }
+     
     /**
      * Performs a database backup procedure of the current connected database into the specified output file path.
      * @param outputfilename Database backup output file path
@@ -441,6 +465,149 @@ public class MySql {
             finally {
                 if (p!=null) p.destroy();
                 p=null; System.gc();
+            }
+            
+            try {
+                File.delete(_batchfilename);
+            }
+            catch (Exception ex) {
+               ex.printStackTrace();
+            }
+        }
+        
+        return _result;
+    }
+    
+    /**
+     * Executes the specified SQL statements directly into the current connected MySql database.
+     * @param sql SQL statements
+     * @return MySql execution result information, otherwise null if something went wrong.
+     */
+    public MySqlResult execute(String sql) {          
+        MySqlApplicationParameterCollection _params=new MySqlApplicationParameterCollection();   
+        return execute(sql, _params);    
+    }
+    
+    /**
+     * Executes the SQL statements inside the specified input file into the current connected MySql database.
+     * @param inputfilename Input file to where the SQL statements will be red.
+     * @return MySql execution result information, otherwise null if something went wrong.
+     */
+    public MySqlResult execute(java.io.File inputfile) {
+        MySqlApplicationParameterCollection _params=new MySqlApplicationParameterCollection();
+        return execute(inputfile, _params);
+    }
+    
+    /**
+     * Executes the specified SQL statements directly into the current connected MySql database.
+     * @param sql SQL statements
+     * @param parameters MySql application valid parameters
+     * @return MySql execution result information, otherwise null if something went wrong.
+     */
+     public MySqlResult execute(String sql, MySqlApplicationParameterCollection parameters) {
+         return execute(sql, parameters, 500);
+     }
+    
+    /**
+     * Executes the SQL statements inside the specified input file into the current connected MySql database.
+     * @param inputfilename Input file to where the SQL statements will be red.
+     * @param parameters MySql application valid parameters
+     * @return MySql execution result information, otherwise null if something went wrong.
+     */
+    public MySqlResult execute(java.io.File inputfile, MySqlApplicationParameterCollection parameters) {
+        return execute(inputfile, parameters, 500);
+    }
+      
+    /**
+     * Executes the specified SQL statements directly into the current connected MySql database.
+     * @param sql SQL statements
+     * @param parameters MySql application valid parameters
+     * @param maxallowedpackets Max allowed packets (in MB) alloted to accept and execute large SQL scripts.
+     * @return MySql execution result information, otherwise null if something went wrong.
+     */
+    public MySqlResult execute(String sql, MySqlApplicationParameterCollection parameters, int maxallowedpackets) {
+        java.io.File _file=null;
+        String _filename=Application.startUpPath() + "\\executables.sql";
+        StreamWriter _sw=new StreamWriter(_filename);
+        
+        try {
+            _sw.write(sql); _file =new java.io.File(_filename);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        finally {
+            _sw.close(); _sw.dispose();
+        }
+        
+        MySqlResult _result=null;
+        if (_file!=null) _result=execute(_file, parameters, maxallowedpackets);
+        return _result;
+    }
+    
+    /**
+     * Executes the SQL statements inside the specified input file into the current connected MySql database.
+     * @param inputfile Input file to where the SQL statements will be red.
+     * @param parameters MySql application valid parameters
+     * @param maxallowedpackets Max allowed packets (in MB) alloted to accept and execute large file.
+     * @return MySql execution result information, otherwise null if something went wrong.
+     */
+    public MySqlResult execute(java.io.File inputfile, MySqlApplicationParameterCollection parameters, int maxallowedpackets) {
+        MySqlResult _result=null;
+        
+        String _inputfilename=inputfile.getPath();
+        if (_inputfilename.startsWith("/")) _inputfilename=inputfile.getPath().substring(1);
+        String _batchfilename=Application.startUpPath() + "\\execute.bat";
+        String _mysqlpath=mime.Mime.resources.mySql().getPath();
+        String _parameters=""; 
+        for (String param:parameters) _parameters += ((!_parameters.trim().equals(""))? " ":"") + param;
+         
+        if (_mysqlpath.startsWith("/")) _mysqlpath=mime.Mime.resources.mySql().getPath().substring(1);
+        String _contents="\"" +  _mysqlpath + "\" -h " + _connection.getServer() + " -u " + _connection.getUserId() + " -p" + _connection.getPassword() + " " + _connection.getDatabase() + (_parameters.equals("")? "":" ") + _parameters + " --max_allowed_packet=" + maxallowedpackets + "M --default-character-set=utf8 < \"" + _inputfilename + "\"";
+        java.io.File _batchfile=initBatchFile(_batchfilename, _contents);
+        
+        if (_batchfile!=null) {
+            java.lang.Process p=null;
+            
+            try {
+                p=Runtime.getRuntime().exec(new String[]{"cmd.exe", "/C", _batchfilename});
+                p.waitFor();
+                InputStream _errorstream = p.getErrorStream();
+                String _error="";
+                
+                if (_errorstream!=null) {
+                    if (_errorstream.available() > 0) {     
+                        StringWriter _writer = new StringWriter();
+                    
+                        try {
+                            IOUtils.copy(_errorstream, _writer);
+                            _error = _writer.toString();
+                        }
+                        catch (Exception ex) {
+                            ex.printStackTrace();
+                        }                    
+                        finally {
+                            _writer.close(); _writer=null; System.gc();
+                        }
+                    }
+                }
+                
+                _result=new MySqlResult(_inputfilename, _contents, _error);
+            }
+            catch (Exception ex) {   
+                _result=new MySqlResult(_inputfilename, _contents, ex.getMessage());
+                ex.printStackTrace();
+            }
+            finally {    
+                if (p!=null) p.destroy();
+                p=null; System.gc();
+            }
+              
+            try {
+                File.delete(_batchfilename);
+            }
+            catch (Exception ex) {
+               ex.printStackTrace();
             }
         }
         
