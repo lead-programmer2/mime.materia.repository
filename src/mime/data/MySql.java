@@ -391,6 +391,12 @@ public class MySql {
      */
     public MySqlDumpResult dump(String outputfilename) {
         MySqlApplicationParameterCollection _params=new MySqlApplicationParameterCollection();
+        
+        ArrayList<String> _tablelist=_connection.getTables();
+        if (_tablelist!=null) {
+            for (String table:_tablelist) _params.add(table);
+        }
+        
         _params.add(HEX_BLOB);
         _params.add(QUICK);
         _params.add(ROUTINES);
@@ -420,12 +426,10 @@ public class MySql {
         
         String _tables=""; String _parameters="";
         URL _mysqldump=mime.Mime.resources.mySqlDump();
-        ArrayList<String> _tablelist=_connection.getTables();
-        for (String table:_tablelist) _tables += ((!_tables.trim().equals(""))? " ":"") + table;
         for (String param:parameters) _parameters += ((!_parameters.trim().equals(""))? " ":"") + param;
         String _dumppath=_mysqldump.getPath();
         if (_dumppath.trim().startsWith("/")) _dumppath=_mysqldump.getPath().substring(1);
-        String _contents="\"" + _dumppath + "\" --host=" + _connection.getServer() + " --user=" + _connection.getUserId() + " --password=" + _connection.getPassword() + " " + _connection.getDatabase() + " " + _tables + (!_parameters.equals("")? " ":"") + _parameters + ((!_parameters.equals("") || !_tables.equals(""))? " ":"") + "> \"" + outputfilename.replace("\\", "/") + "\"";
+        String _contents="\"" + _dumppath + "\" --host=" + _connection.getServer() + " --user=" + _connection.getUserId() + " --password=" + _connection.getPassword() + " " + _connection.getDatabase() + " " + (!_parameters.equals("")? " ":"") + _parameters + ((!_parameters.equals("") || !_tables.equals(""))? " ":"") + "> \"" + outputfilename.replace("\\", "/") + "\"";
         String _batchfilename=Application.startUpPath() + "\\dump.bat";
         System.out.println("Creating : " + _batchfilename + " with contents " + _contents + "...");
         java.io.File _batchfile=initBatchFile(_batchfilename, _contents);
