@@ -63,6 +63,22 @@ public class ResourceManager {
     }
     
     /**
+     * Gets the URL of the embedded MySQLDump application resource.
+     * @return URL of the mysql.exe resource.
+     */
+    public URL mySql() {
+        return getResource("/mime/resources/mysql.exe");
+    }
+    
+    /**
+     * Gets the URL of the embedded MySQLDump application resource.
+     * @return URL of the mysqldump.exe resource.
+     */
+    public URL mySqlDump() {
+        return getResource("/mime/resources/mysqldump.exe");
+    }
+    
+    /**
      * Gets the URL of the open file image used in OpenFileDialog class.
      * @return URL of the openfiledialog.png resource.
      */
