@@ -138,7 +138,7 @@ public class StreamReader {
      * Gets all the text contents of the initialized file.
      * @return Interpreted contents of file.
      */
-    public String realAll() {
+    public String realToEnd() {
         StringBuilder _builder=new StringBuilder();
         close(); init();
         
