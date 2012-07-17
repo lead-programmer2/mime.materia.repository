@@ -72,6 +72,7 @@ public class Path {
                 }   
             }
               
+            if (_woextension.equals("")) _woextension=_name;
             _matcher=null; _pattern=null;  System.gc();   
         }
        
