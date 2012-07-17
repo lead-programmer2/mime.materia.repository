@@ -10,6 +10,37 @@ package mime.io;
  */
 public final class Directory {
     
+        /**
+     * Performs file compression / archiving to a certain file.
+     * @param directory Directory path to be compressed.
+     * @return File information of the output file, otherwise null if something went wrong.
+     */
+    public static java.io.File compress(String directory) {
+        java.io.File _file=null;
+        
+        Archiver  _archiver=new Archiver();
+        _file = _archiver.archive(directory);
+        _archiver.dispose();
+        
+        return _file; 
+    }
+    
+    /**
+     * Performs file compression / archiving to a certain file.
+     * @param directory Directory path to be compressed.
+     * @param destination Output archive file destination
+     * @return  File information of the output file, otherwise null if something went wrong.
+     */
+    public static java.io.File compress(String directory, String destination) {
+        java.io.File _file=null;
+        
+        Archiver  _archiver=new Archiver();
+        _file = _archiver.archive(directory, destination);
+        _archiver.dispose();
+        
+        return _file;
+    }
+    
     /**
      * Creates a new directory thru the specified path.
      * @param directory Path of the directory to be created.
