@@ -178,8 +178,6 @@ public class StreamWriter {
      */
     public boolean write(String contents) {
         boolean _written=false;
-        
-        System.out.println(_append);
                             
         if (!_file.exists()) {
             try {
