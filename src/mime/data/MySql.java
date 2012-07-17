@@ -542,6 +542,16 @@ public class MySql {
         
         MySqlResult _result=null;
         if (_file!=null) _result=execute(_file, parameters, maxallowedpackets);
+        
+        if (_file!=null) {
+            try {
+                _file.delete();
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }     
+        }
+        
         return _result;
     }
     
