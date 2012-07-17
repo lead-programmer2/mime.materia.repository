@@ -16,7 +16,10 @@ public final class Application {
      */
     public static String startUpPath() {
         java.io.File _file=new java.io.File("");
-        return _file.getAbsolutePath();
+        String _path=_file.getAbsolutePath();
+        String _parsedpath=_path;
+        if (_path.startsWith("/")) _parsedpath = _path.substring(2);
+        return _parsedpath;
     }
      
 }
