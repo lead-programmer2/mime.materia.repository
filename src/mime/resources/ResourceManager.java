@@ -110,4 +110,12 @@ public class ResourceManager {
         return getResource("/mime/resources/savefiledialog.png");
     }
     
+    /**
+     * Gets the URL of the embedded 7z archiving tool application resource.
+     * @return 
+     */
+    public URL sevenZip() {
+        return getResource("/mime/resources/7z.exe");
+    }
+    
 }
